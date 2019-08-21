@@ -5,7 +5,7 @@
 #   4. Use RSpec where necessary
 #   5. Keep Classes Modular
 #   6. Methods must do only 1 thing
-#   7. Restricting pieces to their colour can just be accouted for in a piece's valid moves
+#   7. Restricting pieces to their colour can just be accounted for in a piece's valid moves
 
 
 class Piece
@@ -64,14 +64,14 @@ class Game
             @board.game_board[6][col] = Piece.new("P", :black)
         end
 
-        @board.game_board[0][0] = Piece.new('R', :black)
-        @board.game_board[0][7] = Piece.new('R', :black)
-        @board.game_board[0][1] = Piece.new('H', :black)
-        @board.game_board[0][6] = Piece.new('H', :black)
-        @board.game_board[0][2] = Piece.new('B', :black)
-        @board.game_board[0][5] = Piece.new('B', :black)
-        @board.game_board[0][3] = Piece.new('Q', :black)
-        @board.game_board[0][4] = Piece.new('K', :black)
+        @board.game_board[7][0] = Piece.new('R', :black)
+        @board.game_board[7][7] = Piece.new('R', :black)
+        @board.game_board[7][1] = Piece.new('H', :black)
+        @board.game_board[7][6] = Piece.new('H', :black)
+        @board.game_board[7][2] = Piece.new('B', :black)
+        @board.game_board[7][5] = Piece.new('B', :black)
+        @board.game_board[7][3] = Piece.new('Q', :black)
+        @board.game_board[7][4] = Piece.new('K', :black)
 
         @board.game_board[0][0] = Piece.new('R', :white)
         @board.game_board[0][7] = Piece.new('R', :white)
@@ -108,11 +108,50 @@ class Game
         puts
     end
 
+    #player selects piece to move
+    def start_select
+        puts "Please choose a position from which to move"
+        @starting_position = gets.upcase!.chomp.strip
+        position_check(@starting_position) && position_with_piece_check(@starting_position) ? @starting_position : start_select
+    end
+
+    def position_check(start)
+        start =~ /^[a-h]{1}[1-8]{1}$/i ? true : false
+    end
+
+    def position_with_piece_check(start)
+        number_positions = letter_to_number(start)
+        (@board.game_board[number_positions[1].to_i - 1][number_positions[0].to_i]).nil? ? false : true 
+    end
+
+    def letter_to_number(start)
+        letters = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+        ]
+
+        letters.each_with_index do |letter, index|
+            if letter == start[0]
+                start[0] = index.to_s
+            end
+        end
+        start
+    end
+
+
     def play
         ready_board
-        display_current_game_board
+=begin       loop do
+            display_current_game_board
+            #player selects piece
+            start_select
+            #player chooses position to move to
+            move_select #perform all the checks:    the validity of the move for the current piece type
+        end
+=end
     end
 end
 
 x = Game.new
-x.play
+x.ready_board
+x.display_current_game_board
+x.start_select
