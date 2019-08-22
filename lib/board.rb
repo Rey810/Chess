@@ -124,19 +124,22 @@ class Game
 
 
     #player selects piece to move
-    def starting_position_choice
+    def move_from_choice
         puts "Please choose a position from which to move"
         @starting_position = gets.upcase!.chomp.strip
-        starting_position_choice_valid?(@starting_position) && is_game_piece_in_this_position?(@starting_position) ? @starting_position : starting_position_choice
+        move_choice_valid?(@starting_position) && is_any_piece_in_this_position?(@starting_position) ? @starting_position : move_from_choice
     end
 
-    def starting_position_choice_valid?(start)
+
+    
+    #MOVE_FROM_CHOICE CHECKS
+    def move_choice_valid?(start)
         start =~ /^[a-h]{1}[1-8]{1}$/i ? true : false
     end
 
-    def is_game_piece_in_this_position?(start)
-        number_positions = letter_to_number(start)
-        (@board.game_board[number_positions[1].to_i - 1][number_positions[0].to_i]).nil? ? false : true 
+    def is_any_piece_in_this_position?(start)
+        @number_positions = letter_to_number(start)
+        (@board.game_board[@number_positions[1].to_i][@number_positions[0].to_i]).nil? ? false : true 
     end
 
     def letter_to_number(start)
@@ -145,18 +148,37 @@ class Game
         ]
 
         letters.each_with_index do |letter, index|
-            letter == start[0] ? start[0] = index.to_s : next
+            if letter == start[0]
+                start[0] = index.to_s
+            end
         end
+        start[1] = (start[1].to_i - 1).to_s
         start
     end
 
 
+
+
     def move_piece
         #select piece at valid starting position
+        (@board.game_board[@number_positions[1].to_i][@number_positions[1].to_i])
         #identify piece
+        piece_type = (@board.game_board[@number_positions[1].to_i][@number_positions[1].to_i]).type
+        piece_colour = (@board.game_board[@number_positions[1].to_i][@number_positions[1].to_i]).colour
         #inform player of selected piece ("Where would you like to move the Pawn?")
-        #
-            #call on valid moves
+        puts "Where would you like to move the #{piece_colour} #{piece_type}?"
+        #ask player for move_to_position
+        move_to_choice = gets.upcase!.chomp.strip
+        #check input validity
+        move_choice_valid?(move_to_choice) ? true : move_piece
+        #check move validity
+            #this will require a check to see what piece type has been selected. 
+            #maybe change the pieces into the different classes so that the valid moves can be coded there
+            #then you'd just have to see the class type and the moves contained therein to see what 
+            #moves are possible for the current piece
+        #move_piece
+            #if another piece is there, remove it and place new piece is there
+            #else just place piece there
     end
 
 
@@ -178,7 +200,3 @@ class Game
     end
 end
 
-x = Game.new
-x.ready_board
-x.display_current_game_board
-x.starting_position_choice
