@@ -20,6 +20,18 @@ class Piece
     
 end
 
+class King
+    attr_accessor :check_count, :checkmate
+    attr_reader :type, :colour
+
+    def initialize(type, colour)
+        @type = type
+        @colour = colour
+        @check_count = 0
+        @checkmate = false
+    end
+end
+
 class Board
     #generate a board (8*8)
     attr_accessor :game_board
@@ -71,7 +83,7 @@ class Game
         @board.game_board[7][2] = Piece.new('B', :black)
         @board.game_board[7][5] = Piece.new('B', :black)
         @board.game_board[7][3] = Piece.new('Q', :black)
-        @board.game_board[7][4] = Piece.new('K', :black)
+        @board.game_board[7][4] = King.new('K', :black)
 
         @board.game_board[0][0] = Piece.new('R', :white)
         @board.game_board[0][7] = Piece.new('R', :white)
@@ -80,7 +92,7 @@ class Game
         @board.game_board[0][2] = Piece.new('B', :white)
         @board.game_board[0][5] = Piece.new('B', :white)
         @board.game_board[0][3] = Piece.new('Q', :white)
-        @board.game_board[0][4] = Piece.new('K', :white)
+        @board.game_board[0][4] = King.new('K', :white)
 
     end
 
@@ -108,18 +120,21 @@ class Game
         puts
     end
 
+
+
+
     #player selects piece to move
-    def start_select
+    def starting_position_choice
         puts "Please choose a position from which to move"
         @starting_position = gets.upcase!.chomp.strip
-        position_check(@starting_position) && position_with_piece_check(@starting_position) ? @starting_position : start_select
+        starting_position_choice_valid?(@starting_position) && is_game_piece_in_this_position?(@starting_position) ? @starting_position : starting_position_choice
     end
 
-    def position_check(start)
+    def starting_position_choice_valid?(start)
         start =~ /^[a-h]{1}[1-8]{1}$/i ? true : false
     end
 
-    def position_with_piece_check(start)
+    def is_game_piece_in_this_position?(start)
         number_positions = letter_to_number(start)
         (@board.game_board[number_positions[1].to_i - 1][number_positions[0].to_i]).nil? ? false : true 
     end
@@ -130,12 +145,24 @@ class Game
         ]
 
         letters.each_with_index do |letter, index|
-            if letter == start[0]
-                start[0] = index.to_s
-            end
+            letter == start[0] ? start[0] = index.to_s : next
         end
         start
     end
+
+
+    def move_piece
+        #select piece at valid starting position
+        #identify piece
+        #inform player of selected piece ("Where would you like to move the Pawn?")
+        #
+            #call on valid moves
+    end
+
+
+
+
+
 
 
     def play
@@ -154,4 +181,4 @@ end
 x = Game.new
 x.ready_board
 x.display_current_game_board
-x.start_select
+x.starting_position_choice
