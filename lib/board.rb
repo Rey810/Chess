@@ -17,8 +17,26 @@ class Piece
         @type = type
         @colour = colour
     end
+
+    def move_arrays(piece_type)
+        piece_type = piece_type
+        case piece_type
+            when "P"
+                #add the possible moves of a pawn to the current position
+            end
+            when 'R'
+            end
+            when 'H'
+            end
+            when 'B'
+            end
+            when 'Q'
+            end
+        end
+    end
     
 end
+
 
 class King
     attr_accessor :check_count, :checkmate
@@ -62,6 +80,7 @@ end
 
 class Game
     attr_accessor :board
+    attr_reader :starting_position
     #populate the board with pieces
     def initialize  
         @board = Board.new 
@@ -69,11 +88,11 @@ class Game
 
     def ready_board
         @board.game_board.length.downto(0) do |col|
-            @board.game_board[1][col] = Piece.new("P", :white)
+            @board.game_board[1][col] = Pawn.new("P", :white)
         end
 
         @board.game_board.length.downto(0) do |col|
-            @board.game_board[6][col] = Piece.new("P", :black)
+            @board.game_board[6][col] = Pawn.new("P", :black)
         end
 
         @board.game_board[7][0] = Piece.new('R', :black)
@@ -165,20 +184,30 @@ class Game
         #identify piece
         piece_type = (@board.game_board[@number_positions[1].to_i][@number_positions[1].to_i]).type
         piece_colour = (@board.game_board[@number_positions[1].to_i][@number_positions[1].to_i]).colour
+
+        CHECK 1
+        #perform a check to see all the possible moves from start position
+        #possible_moves = all_moves_for_type(piece_type, @starting_position)
+
         #inform player of selected piece ("Where would you like to move the Pawn?")
         puts "Where would you like to move the #{piece_colour} #{piece_type}?"
         #ask player for move_to_position
         move_to_choice = gets.upcase!.chomp.strip
+
+        CHECK 2
         #check input validity
         move_choice_valid?(move_to_choice) ? true : move_piece
-        #check move validity
-            #this will require a check to see what piece type has been selected. 
-            #maybe change the pieces into the different classes so that the valid moves can be coded there
-            #then you'd just have to see the class type and the moves contained therein to see what 
-            #moves are possible for the current piece
-        #move_piece
-            #if another piece is there, remove it and place new piece is there
-            #else just place piece there
+
+        CHECK 3
+        #check if a piece is present at the move_to_choice.
+        #if there is: check the colour, if opposite in colour, remove piece and return true
+        #if there is not, then return true
+
+        CHECK 4
+        #also check if the move_to_choice is included in the possible_moves array
+        #move_to_choice_included_in_possible_moves?(move_to_choice)
+        #if both checks are completed (move_choice_valid? and move_to_choice_included_in_possible_moves) then piece can be moved
+        
     end
 
 
